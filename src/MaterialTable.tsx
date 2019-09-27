@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -16,8 +16,13 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowX: 'auto',
       margin: "auto"
     },
+    headers: {
+      fontSize: 14,
+      borderBottom: "1px solid #ffaa1c"
+    },
     button: {
       margin: theme.spacing(1),
+      borderColor: "#ffaa1c"
     },
     table: {
       minWidth: 650,
@@ -32,31 +37,45 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function createData(id: string, name: string, category: string, createDate: string, status: string, deadline: string) {
-  return { id, name, category, createDate, status, deadline };
-}
-
-const rows: any[] = [
-  createData("1", 'Minta yoghurt', "Reimbursement", "23 Jan 2019", "-", "30 Jan 2019"),
-  createData("2", 'Minta asset untuk event', "Content", "21 Jan 2019", "On-progress", "25 Jan 2019"),
-  createData("3", 'Lorem ipsum dolor sit amet consectetur adipiscing elit', "Reimbursement", "20 Jan 2019", "On-Progress", "30 Aug 2019"),
-];
-
 const headerDatas = [
-  "Nama Request", 
-  "Kategori", 
-  "Tanggal", 
+  "Title", 
+  "Type", 
+  "Created at", 
   "Status", 
   "Request Deadline",
   ""
 ]
 
+export type rowData = {
+  id: number
+  name: string
+  status: string
+  deadline: string
+  category: string
+  createDate: string
+}
+
 type materialTableProps = {
-  onRequestClicked: (id: string) => void
+  rows: rowData[]
+
+  onRequestClicked: (id: number) => void
 }
 
 export default function MaterialTable(props: materialTableProps) {
   const classes = useStyles();
+
+  // async function fetchRequests() {
+  //   let res = await fetch("http://127.0.0.1:5000/get_projects")
+  //   if (res.ok) {
+  //     let data = await res.json()
+  //     console.log(data)
+  //   }
+
+  // }
+
+  // useEffect(() => {
+  //   fetchRequests()
+  // }, [])
 
   return (
     <>
@@ -64,35 +83,33 @@ export default function MaterialTable(props: materialTableProps) {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              {headerDatas.map((headerData, key) => <TableCell key={key} align="center" >{headerData}</TableCell>)}
+              {headerDatas.map((headerData, key) => <TableCell className={classes.headers} key={key} align="center" >{headerData}</TableCell>)}
             </TableRow>
           </TableHead>
           <TableBody>
             {
-              rows.length > 0 ? 
-              (rows.map((row, key) => (
+              props.rows.length > 0 ? 
+              (props.rows.map((row, key) => (
                 <TableRow key={key}>
                   <TableCell align="center" component="th" scope="row">
                     {row.name}
                   </TableCell>
                   <TableCell align="center" >{row.category}</TableCell>
                   <TableCell align="center" >{row.createDate}</TableCell>
-                  <TableCell align="center" >{row.status}</TableCell>
+                  <TableCell align="center" >{row.status === "" ? "---" : row.status}</TableCell>
                   <TableCell align="center" >{row.deadline}</TableCell>
                   <TableCell align="center" >
-                    <Button variant="contained" className={classes.button} onClick={() => props.onRequestClicked(row.id)}>
+                    <Button variant="outlined" className={classes.button} onClick={() => props.onRequestClicked(row.id)}>
                       Edit
                     </Button>
                   </TableCell>
                 </TableRow>
               ))) : (
                 <TableRow className={classes.noRequest}>
-                  <TableCell/>
-                  <TableCell/>
-                  <TableCell align="center">
-                    Anda belum memiliki request
+                  <TableCell colSpan={6} align="center">
+                    <img style={{ maxHeight: 400, maxWidth: 1000 }} src={require('./empty_placeholder_img.jpg')} alt="nothing to see, yet"/>
+                    <div style={{ fontSize: 18, marginBottom: 10 }}>Oops, You haven't made any request yet!</div>
                   </TableCell>
-                  <TableCell/>
                 </TableRow>
               )
             }

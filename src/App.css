@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  height: 700px;
 }
 
 .App-logo {
@@ -19,4 +20,17 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+.main-container__loading {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+  height: 100%;
+  font-size: 25px;
+}
+
+.main-container__loading div {
+  margin-top: 10px; 
 }

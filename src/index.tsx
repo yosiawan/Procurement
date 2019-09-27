@@ -2,7 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './App';
+import SSSO from './SSSO';
 
 ReactDOM.render(
-  <App />, 
+  <SSSO>
+    <App />
+  </SSSO>,
 document.getElementById('root'));
